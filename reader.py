@@ -2,16 +2,17 @@
 #TODO:
 # 1. Get text displaying and cycling through with working buttons. ✔
 # 2. Highlight the focal character and keep it consistently in the middle of the screen. ✔
-# 3. Work out why Pride and Prejudice Ch.1 isn't reading properly.
-# 4. (Big One) Write code for pulling text from epubs and chunking it into bitesize chunks.
+# 3. Work out why Pride and Prejudice Ch.1 isn't reading properly. ✔
+# 4. (Big One) Write code for pulling text from epubs and chunking it into bite size chunks. (May need to break down.)
 # 5. Implement way of selecting epub to be read within UI of the reader.
 # 6. Write some tests.
-# 7. Tweaks, feature upgrades* and bufixes.
+# 7. Tweaks, feature upgrades* and bug fixes.
 
 # * Feature Upgrade & Tweak List:
-# Put focal point left of centre as cultures who read left to right find that easier.
+# Put focal point left of centre as research shows cultures who read left to right find that easier.
 # Customisable colours and fonts.
 # Adjustable window size and fullscreen option with coordinates of buttons/text adapted to fit.
+# Individual chapter selection.
 
 # Imports #
 from tkinter import *
@@ -22,7 +23,7 @@ window = Tk()
 window.title("Speed Reader")
 BACKGROUND_COLOR = "#FDF5E6"
 window.config(width=800, height=800, padx=10, pady=20, bg=BACKGROUND_COLOR)
-f = font.Font(family="Helvetica", size=24, weight="bold")
+f = font.Font(family="Helvetica", size=32, weight="bold")
 
 start_pause_icon = PhotoImage(file="images/start.png")
 faster_icon = PhotoImage(file="images/faster.png")
@@ -30,16 +31,16 @@ slower_icon = PhotoImage(file="images/slower.png")
 
 canvas = Canvas(width=800, height=526, bg=BACKGROUND_COLOR, highlightthickness=0)
 canvas.grid(row=2, column=2)
-word_start = canvas.create_text(400,263,text="", anchor="e", font=f, fill="black")
-focal_letter = canvas.create_text(400,263,text="", anchor='center', font=f, fill="red")
-word_end = canvas.create_text(400,263,text="", anchor="w", font=f, fill="black")
+word_start = canvas.create_text(400 - f.measure("d")/2,263,text="Spee", anchor="e", font=f, fill="black")
+focal_letter = canvas.create_text(400,263,text="d", anchor='center', font=f, fill="red")
+word_end = canvas.create_text(400 + f.measure("d")/2,263,text=" Reader", anchor="w", font=f, fill="black")
 speed_text = canvas.create_text(720, 480, text="300 WPM", fill="black", font=("Arial", 28, "bold"))
 
 # Control Variables #
-keep_reading = True
+keep_reading = False
 words_per_min = 300
 word_count = 0
-with open("text/text.txt") as file:
+with open("text/pride_and_prejudice_ch1_excerpt.txt", mode="r", encoding="utf8") as file:
     text = file.read()
     word_list = text.split()
 
@@ -53,10 +54,11 @@ def get_word():
     global word_count
     global word_list
     if word_count < len(word_list) - 1:
+        current_word = word_list[word_count]
         word_count += 1
     else:
+        current_word = word_list[word_count]
         word_count = 0
-    current_word = word_list[word_count]
     return current_word
 
 def new_word():
