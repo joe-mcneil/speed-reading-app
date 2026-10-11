@@ -5,6 +5,6 @@ __pycache__
 books/*
 # Specifically allowing titles with licences which should allow them being here for a non-profit learning project.
 !books/Dracula.epub
-!books/wuthering-heights.epub
-!books/test-pride-and-prejudice.epub
+!books/Wuthering_Heights.epub
+!books/Pride_and_Prejudice.epub
 !books/The_Wild_Duck.epub

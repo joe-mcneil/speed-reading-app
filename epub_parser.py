@@ -37,10 +37,10 @@ def epub_to_words(path_to_book):
 # Testing
 if __name__ == "__main__":
     # Understanding how many paragraphs are being grabbed from different items within the epub.
-    book = epub.read_epub("books/test-pride-and-prejudice.epub")
+    book = epub.read_epub("books/Pride_and_Prejudice.epub")
     for item in book.get_items_of_type(ebooklib.ITEM_DOCUMENT):
         print(item.get_name(), len(xhtml_to_paragraphs(item)))
     # Looking at the first and last fifty words grabbed.
-    words = epub_to_words("books/test-pride-and-prejudice.epub")
+    words = epub_to_words("books/Pride_and_Prejudice.epub")
     print(words[:50])
     print(words[-50:])
