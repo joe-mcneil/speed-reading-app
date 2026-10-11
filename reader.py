@@ -36,10 +36,17 @@ def load_book(path):
     word_count = 0
     word_list = epub_to_words(path)
     print(word_count, path)
-    return word_list
 
 def book_chosen(path):
     load_book(path)
+    bookshelf_frame.grid_remove()
+    reader_frame.grid()
+
+def no_books():
+    global word_list
+    with open("text/pride_and_prejudice_ch1_excerpt.txt", mode="r", encoding="utf8") as file:
+        text = file.read()
+        word_list = text.split()
     bookshelf_frame.grid_remove()
     reader_frame.grid()
 
@@ -100,15 +107,6 @@ start_pause_icon = PhotoImage(file="images/start.png")
 faster_icon = PhotoImage(file="images/faster.png")
 slower_icon = PhotoImage(file="images/slower.png")
 
-# Bookshelf Frame #
-bookshelf_frame = Frame(window, bg=BACKGROUND_COLOR)
-shelf_title = Label(bookshelf_frame, text= "Bookshelf", bg=BACKGROUND_COLOR, font=f)
-shelf_title.grid(row=0, column=0, pady=(0, 20))
-# Bookshelf Buttons
-for row, path_name in enumerate(book_paths, start=1):
-    book_button = Button(bookshelf_frame, text=path_name.stem, command=lambda p=path_name: book_chosen(p)) # Stops pathname freezing at last value.
-    book_button.grid(row=row, column=0)
-
 # Reader Frame #
 reader_frame = Frame(window, bg=BACKGROUND_COLOR)
 reader_canvas = Canvas(reader_frame, width=800, height=526, bg=BACKGROUND_COLOR, highlightthickness=0)
@@ -128,6 +126,24 @@ start_and_pause_button.config(padx=20)
 faster_button = Button(reader_frame, image=faster_icon, command=speed_up, highlightthickness=0)
 faster_button.grid(column=3, row=4)
 faster_button.config(padx=20)
+
+# Bookshelf Frame #
+bookshelf_frame = Frame(window, bg=BACKGROUND_COLOR)
+shelf_title = Label(bookshelf_frame, text= "Bookshelf", bg=BACKGROUND_COLOR, font=f)
+shelf_title.grid(row=0, column=0, pady=(0, 20))
+# Bookshelf Buttons
+if len(book_paths) > 0:
+    for row, path_name in enumerate(book_paths, start=1):
+        book_button = Button(bookshelf_frame, text=path_name.stem, command=lambda p=path_name: book_chosen(p)) # Stops pathname freezing at last value.
+        book_button.grid(row=row, column=0)
+else:
+    no_book_label = Label(bookshelf_frame, text="No Books Loaded", background=BACKGROUND_COLOR, font=f)
+    no_book_label.grid(row=2, column=0)
+    no_book_button = Button(bookshelf_frame, text= "Read Sample Text", command=no_books, font=f)
+    no_book_button.grid(row=4, column=0)
+
+# Chapter Selection Frame #
+chapter_frame = Frame(window, bg=BACKGROUND_COLOR)
 
 ## Window Logic ##
 # Startup
