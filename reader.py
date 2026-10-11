@@ -1,12 +1,13 @@
-## Speed Reader v.0.2 ##
+## Speed Reader v.0.3 ##
 #TODO:
 # 1. Get text displaying and cycling through with working buttons. ✔
 # 2. Highlight the focal character and keep it consistently in the middle of the screen. ✔
 # 3. Work out why Pride and Prejudice Ch.1 isn't reading properly. ✔
-# 4. (Big One) Write code for pulling text from epubs and chunking it into bite size chunks. (May need to break down.)
-# 5. Implement way of selecting epub to be read within UI of the reader.
-# 6. Write some tests.
-# 7. Tweaks, feature upgrades* and bug fixes.
+# 4. Pull text from epub_parser.py rather than text file. ✔
+# 5. Implement book selection in reader UI at startup. (Will help with testing chapter selection.)
+# 6. Write basic chapter selection for P&P, including a chaptered book dataclass that the parser sends to the reader.
+# 7. Test on lots of different epub layouts.
+# 8. Tweaks, feature upgrades* and bug fixes.
 
 # * Feature Upgrade & Tweak List:
 # Put focal point left of centre as research shows cultures who read left to right find that easier.
@@ -17,6 +18,7 @@
 # Imports #
 from tkinter import *
 from tkinter import font
+from epub_parser import epub_to_words
 
 # Window, Images & UI Setup #
 window = Tk()
@@ -40,12 +42,16 @@ speed_text = canvas.create_text(720, 480, text="300 WPM", fill="black", font=("A
 keep_reading = False
 words_per_min = 300
 word_count = 0
-with open("text/pride_and_prejudice_ch1_excerpt.txt", mode="r", encoding="utf8") as file:
-    text = file.read()
-    word_list = text.split()
+# with open("text/pride_and_prejudice_ch1_excerpt.txt", mode="r", encoding="utf8") as file:
+#     text = file.read()
+#     word_list = text.split()
+word_list = epub_to_words("books/test-pride-and-prejudice.epub")
 
 
 # Functions
+def load_book(path):
+    pass
+
 def reading_speed(wpm):
     return int((60/wpm)*1000)
 

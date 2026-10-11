@@ -1,2 +1,9 @@
 .idea
 .venv
+__pycache__
+# Ignoring everything in the books folder by default so we're not inadvertantly uploading anything which should not be.
+books/*
+# Specifically allowing titles with licences which should allow them being here for a non-profit learning project.
+!books/Dracula.epub
+!books/wuthering-heights.epub
+!books/test-pride-and-prejudice.epub
