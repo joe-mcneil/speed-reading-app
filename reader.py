@@ -42,23 +42,23 @@ speed_text = canvas.create_text(720, 480, text="300 WPM", fill="black", font=("A
 keep_reading = False
 words_per_min = 300
 word_count = 0
-# with open("text/pride_and_prejudice_ch1_excerpt.txt", mode="r", encoding="utf8") as file:
-#     text = file.read()
-#     word_list = text.split()
-word_list = epub_to_words("books/test-pride-and-prejudice.epub")
+word_list = []
 
 
 # Functions
 def load_book(path):
-    pass
+    global word_list, word_count
+    word_count = 0
+    word_list = epub_to_words(path)
+    print(word_count, path)
+    return word_list
 
 def reading_speed(wpm):
     return int((60/wpm)*1000)
 
 def get_word():
     # Splitting this function out because eventually getting the words will be its own .py file.
-    global word_count
-    global word_list
+    global word_list, word_count
     if word_count < len(word_list) - 1:
         current_word = word_list[word_count]
         word_count += 1
@@ -113,5 +113,6 @@ faster_button.grid(column=3, row=4)
 faster_button.config(padx=20)
 
 # Mainloop Logic
+load_book("books/test-pride-and-prejudice.epub")
 new_word()
 window.mainloop()
