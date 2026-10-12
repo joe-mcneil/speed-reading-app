@@ -4,21 +4,22 @@
 # 2. Highlight the focal character and keep it consistently in the middle of the screen. ✔
 # 3. Work out why Pride and Prejudice Ch.1 isn't reading properly. ✔
 # 4. Pull text from epub_parser.py rather than text file. ✔
-# 5. Implement book selection in reader UI at startup. (Will help with testing chapter selection.)
-# 6. Write basic chapter selection for P&P, including a chaptered book dataclass that the parser sends to the reader.
-# 7. Test on lots of different epub layouts.
-# 8. Tweaks, feature upgrades* and bug fixes.
+# 5. Implement book selection in reader UI at startup. (Will help with testing chapter selection.)✔
+# 6. Write basic chapter selection.✔
+# 7. Test on lots of different epub layouts. Fix wrapping for chapters.
+# 8. Use custom a class for books.
+# 9. Tweaks, feature upgrades* and bug fixes.
 
 # * Feature Upgrade & Tweak List:
 # Put focal point left of centre as research shows cultures who read left to right find that easier.
 # Customisable colours and fonts.
+# Consistent window size.
 # Adjustable window size and fullscreen option with coordinates of buttons/text adapted to fit.
-# Individual chapter selection.
 
 ##  Imports  ##
 from tkinter import *
 from tkinter import font
-from epub_parser import epub_to_words
+from epub_parser import epub_to_chapters
 from pathlib import Path
 
 
@@ -28,19 +29,24 @@ words_per_min = 300
 word_count = 0
 word_list = []
 book_paths = sorted(Path("books").glob("*.epub"))
+book = {}
+chapters = []
 
 
 ##  Functions  ##
 def load_book(path):
-    global word_list, word_count
+    global word_list, word_count, book, title, chapters
     word_count = 0
-    word_list = epub_to_words(path)
+    book = epub_to_chapters(path)
+    word_list = book["words"]
+    chapters = book["chapters"]
     print(word_count, path)
 
 def book_chosen(path):
     load_book(path)
     bookshelf_frame.grid_remove()
-    reader_frame.grid()
+    chapter_frame.grid()
+    show_chapters()
 
 def no_books():
     global word_list
@@ -48,6 +54,22 @@ def no_books():
         text = file.read()
         word_list = text.split()
     bookshelf_frame.grid_remove()
+    reader_frame.grid()
+
+def show_chapters():
+    for widget in chapter_frame.winfo_children():
+        if widget is not contents_title:
+            widget.destroy()
+    if len(chapters) > 0:
+        for chapter_number in range(len(chapters)):
+            chapter = chapters[chapter_number]
+            chapter_button = Button(chapter_frame, text=chapter[0], command=lambda n=chapter_number: chapter_chosen(n))
+            chapter_button.grid()
+
+def chapter_chosen(chapter_number):
+    global word_count
+    word_count = chapters[chapter_number][1]
+    chapter_frame.grid_remove()
     reader_frame.grid()
 
 def reading_speed(wpm):
@@ -144,12 +166,18 @@ else:
 
 # Chapter Selection Frame #
 chapter_frame = Frame(window, bg=BACKGROUND_COLOR)
+contents_title = Label(chapter_frame, text="Table of Contents", bg=BACKGROUND_COLOR, font=f)
+contents_title.grid(row=0, column=0, pady=(0, 20))
+# Chapter Buttons
+# This is handled in the "show_chapters" function.
 
 ## Window Logic ##
 # Startup
 bookshelf_frame.grid(row=0,column=0)
 reader_frame.grid(row=0,column=0)
+chapter_frame.grid(row=0,column=0)
 reader_frame.grid_remove()
+chapter_frame.grid_remove()
 # Mainloop
 new_word()
 window.mainloop()
